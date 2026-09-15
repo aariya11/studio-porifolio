@@ -23,6 +23,12 @@ export default function LiquidMetalButton({
   const [hasWebGL2, setHasWebGL2] = useState(true);
 
   useEffect(() => {
+    const isTouch = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768;
+    if (isTouch) {
+      setHasWebGL2(false);
+      return;
+    }
+
     const cv = canvasRef.current;
     const container = containerRef.current;
     const btn = buttonRef.current;

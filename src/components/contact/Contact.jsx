@@ -233,7 +233,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       placeholder="e.g. Élise Laurent"
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
                     />
                   </div>
 
@@ -253,7 +253,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       placeholder="e.g. elise@vogue.fr"
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -274,7 +274,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       placeholder="+33 6 ..."
                       value={formData.phone}
                       onChange={handleChange}
-                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
                     />
                   </div>
 
@@ -293,7 +293,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       placeholder="e.g. Late Autumn 2026 / Paris"
                       value={formData.preferredDate}
                       onChange={handleChange}
-                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       name="projectType"
                       value={formData.projectType}
                       onChange={handleChange}
-                      className="w-full bg-[#0d0d10] border border-editorial-border rounded px-4 py-3 text-sm text-white focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-[#0d0d10] border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white focus:border-accent-lime focus:outline-none transition-colors"
                     >
                       <option value="Editorial & Magazine Cover">Editorial & Magazine Cover</option>
                       <option value="Global Fashion Campaign">Global Fashion Campaign</option>
@@ -336,7 +336,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                       name="budgetRange"
                       value={formData.budgetRange}
                       onChange={handleChange}
-                      className="w-full bg-[#0d0d10] border border-editorial-border rounded px-4 py-3 text-sm text-white focus:border-accent-lime focus:outline-none transition-colors"
+                      className="w-full bg-[#0d0d10] border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white focus:border-accent-lime focus:outline-none transition-colors"
                     >
                       <option value="€3,000 — €5,000">€3,000 — €5,000</option>
                       <option value="€5,000 — €10,000">€5,000 — €10,000</option>
@@ -363,7 +363,7 @@ export default function Contact({ preselectedService, onOpenLegal }) {
                     placeholder="Describe your vision, locations, deliverables, and any specific aesthetic references..."
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
+                    className="w-full bg-black/40 border border-editorial-border rounded px-4 py-3 text-base sm:text-sm text-white placeholder-neutral-600 focus:border-accent-lime focus:outline-none transition-colors"
                   />
                 </div>
 

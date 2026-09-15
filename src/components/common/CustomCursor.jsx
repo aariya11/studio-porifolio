@@ -1,105 +1,119 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * Desktop Custom Cursor
- * Transforms dynamically based on hovered element data-cursor attributes:
- * - data-cursor="view" -> expands into pill with "VIEW" text
- * - data-cursor="drag" -> expands into pill with "DRAG" text
- * - data-cursor="arrow" -> expands with "→"
- * - data-cursor="close" -> expands with "✕"
+ * Lightweight, hardware-accelerated pointer follower.
+ * Directly mutates transform on DOM ref to avoid React state re-render churn.
  * Automatically disabled on touch devices and under prefers-reduced-motion.
  */
 export default function CustomCursor() {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
-  const [cursorState, setCursorState] = useState({
-    type: 'default', // 'default', 'view', 'drag', 'arrow', 'close', 'pointer'
-    label: ''
-  });
-  const [isVisible, setIsVisible] = useState(false);
-  const [isTouch, setIsTouch] = useState(false);
+  const cursorRef = useRef(null);
+  const [cursorType, setCursorType] = useState('default');
+  const [cursorLabel, setCursorLabel] = useState('');
+  const [isEnabled, setIsEnabled] = useState(false);
 
   useEffect(() => {
-    // Check if device is touch or prefers reduced motion
-    const checkTouch = () => {
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      setIsTouch(hasTouch || prefersReduced);
-    };
+    // Check if device has fine pointer and allows motion
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    checkTouch();
-    window.addEventListener('resize', checkTouch);
+    if (!hasFinePointer || prefersReduced) {
+      setIsEnabled(false);
+      return;
+    }
+
+    setIsEnabled(true);
 
     const onMouseMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+        cursorRef.current.style.opacity = '1';
+      }
 
-      // Determine what element is being hovered
       const target = e.target;
+      if (!target) return;
+
       const cursorTarget = target.closest('[data-cursor]');
-      
       if (cursorTarget) {
         const type = cursorTarget.getAttribute('data-cursor');
         if (type === 'view') {
-          setCursorState({ type: 'view', label: 'VIEW' });
+          setCursorType('view');
+          setCursorLabel('VIEW');
         } else if (type === 'drag') {
-          setCursorState({ type: 'drag', label: 'DRAG' });
+          setCursorType('drag');
+          setCursorLabel('DRAG');
         } else if (type === 'arrow') {
-          setCursorState({ type: 'arrow', label: '→' });
+          setCursorType('arrow');
+          setCursorLabel('→');
         } else if (type === 'close') {
-          setCursorState({ type: 'close', label: '✕' });
+          setCursorType('close');
+          setCursorLabel('✕');
         } else {
-          setCursorState({ type: 'pointer', label: '' });
+          setCursorType('pointer');
+          setCursorLabel('');
         }
       } else if (target.closest('a, button, [role="button"], input, select, textarea')) {
-        setCursorState({ type: 'pointer', label: '' });
+        setCursorType('pointer');
+        setCursorLabel('');
       } else {
-        setCursorState({ type: 'default', label: '' });
+        setCursorType('default');
+        setCursorLabel('');
       }
     };
 
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
+    const onMouseLeave = () => {
+      if (cursorRef.current) {
+        cursorRef.current.style.opacity = '0';
+      }
+    };
 
-    window.addEventListener('mousemove', onMouseMove);
+    const onMouseEnter = () => {
+      if (cursorRef.current) {
+        cursorRef.current.style.opacity = '1';
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
     document.addEventListener('mouseleave', onMouseLeave);
     document.addEventListener('mouseenter', onMouseEnter);
 
     return () => {
-      window.removeEventListener('resize', checkTouch);
       window.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
     };
-  }, [isVisible]);
+  }, []);
 
-  if (isTouch || !isVisible) return null;
+  if (!isEnabled) return null;
 
-  const isExpanded = cursorState.type === 'view' || cursorState.type === 'drag';
-  const isArrow = cursorState.type === 'arrow' || cursorState.type === 'close';
-  const isPointer = cursorState.type === 'pointer';
+  const isExpanded = cursorType === 'view' || cursorType === 'drag';
+  const isArrow = cursorType === 'arrow' || cursorType === 'close';
+  const isPointer = cursorType === 'pointer';
 
   return (
     <div
+      ref={cursorRef}
       aria-hidden="true"
-      className="fixed top-0 left-0 pointer-events-none z-[9999] transition-transform ease-out duration-75"
+      className="custom-cursor-root fixed top-0 left-0 pointer-events-none z-[9999] opacity-0 will-change-transform"
       style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+        transform: 'translate3d(-100px, -100px, 0)',
+        transition: 'opacity 0.2s ease-out'
       }}
     >
       {/* Outer morphing ring/badge */}
       <div
-        className={`-translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full transition-all duration-300 ${
+        className={`-translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full transition-all duration-200 ${
           isExpanded
-            ? 'w-20 h-20 bg-accent-lime text-black font-mono text-xs font-bold tracking-widest shadow-2xl scale-100 opacity-95'
+            ? 'w-16 h-16 bg-accent-lime text-black font-mono text-[11px] font-bold tracking-widest shadow-2xl scale-100 opacity-95'
             : isArrow
-            ? 'w-12 h-12 bg-white text-black font-mono text-base font-bold scale-100 opacity-90'
+            ? 'w-11 h-11 bg-white text-black font-mono text-base font-bold scale-100 opacity-90'
             : isPointer
-            ? 'w-9 h-9 border border-accent-lime bg-accent-lime/10 scale-110'
-            : 'w-3 h-3 bg-white/80 rounded-full'
+            ? 'w-8 h-8 border border-accent-lime bg-accent-lime/15 scale-110'
+            : 'w-2.5 h-2.5 bg-white/90 rounded-full'
         }`}
       >
-        {isExpanded && <span>{cursorState.label}</span>}
-        {isArrow && <span>{cursorState.label}</span>}
+        {isExpanded && <span>{cursorLabel}</span>}
+        {isArrow && <span>{cursorLabel}</span>}
       </div>
     </div>
   );

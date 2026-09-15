@@ -76,7 +76,7 @@ export default function MobileMenu({
       role="dialog"
       aria-modal="true"
       aria-label="Navigation Menu"
-      className="fixed inset-0 z-[9990] bg-[#070708]/95 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-10 lg:hidden overflow-y-auto transition-all"
+      className="fixed inset-0 h-[100dvh] z-[9990] bg-[#070708]/95 backdrop-blur-2xl flex flex-col justify-between p-6 sm:p-10 lg:hidden overflow-y-auto transition-all"
     >
       {/* Top Header inside overlay */}
       <div className="flex items-center justify-between border-b border-editorial-border pb-6">
@@ -94,10 +94,10 @@ export default function MobileMenu({
             playFocusClick();
             onClose();
           }}
-          className="p-2.5 rounded-full border border-editorial-border hover:border-white text-white hover:text-accent-lime transition-colors"
+          className="w-11 h-11 flex items-center justify-center rounded-full border border-editorial-border hover:border-white text-white hover:text-accent-lime transition-colors"
           aria-label="Close navigation menu"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
       </div>
 
@@ -149,10 +149,10 @@ export default function MobileMenu({
         </div>
 
         {/* Audio Toggle & Contact */}
-        <div className="flex items-center justify-between text-xs font-mono">
+        <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           <button
             onClick={onToggleSound}
-            className="flex items-center gap-2 text-editorial-muted hover:text-white border border-editorial-border px-3 py-1.5 rounded transition-colors"
+            className="min-h-[44px] px-3.5 py-2 flex items-center gap-2 text-editorial-muted hover:text-white border border-editorial-border rounded transition-colors"
           >
             {soundOn ? (
               <>
@@ -169,7 +169,7 @@ export default function MobileMenu({
 
           <a
             href={`mailto:${PHOTOGRAPHER_CONFIG.email}`}
-            className="text-accent-lime hover:underline"
+            className="min-h-[44px] inline-flex items-center text-accent-lime hover:underline py-2"
           >
             {PHOTOGRAPHER_CONFIG.email}
           </a>

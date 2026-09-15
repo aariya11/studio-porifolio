@@ -21,6 +21,11 @@ export default function Navbar({
 
   // Specular rim tracking and dock proximity magnification from Sylva
   useEffect(() => {
+    // Save CPU/GPU on touch screens where hover/specular tracking does not apply
+    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+      return;
+    }
+
     const nav = navRef.current;
     if (!nav) return;
 
@@ -234,14 +239,14 @@ export default function Navbar({
               if (!soundOn) playShutterSound();
             }}
             type="button"
-            className="p-2 rounded-full border border-white/10 hover:border-accent-lime text-neutral-400 hover:text-white transition-all duration-300"
+            className="w-11 h-11 flex items-center justify-center rounded-full border border-white/10 hover:border-accent-lime text-neutral-400 hover:text-white transition-all duration-300"
             aria-label={soundOn ? "Mute mechanical shutter audio" : "Enable mechanical shutter audio"}
             title={soundOn ? "Mute shutter audio" : "Enable tactile shutter audio"}
           >
             {soundOn ? (
-              <Volume2 className="w-3.5 h-3.5 text-accent-lime" />
+              <Volume2 className="w-4 h-4 text-accent-lime" />
             ) : (
-              <VolumeX className="w-3.5 h-3.5 text-neutral-500" />
+              <VolumeX className="w-4 h-4 text-neutral-500" />
             )}
           </button>
 
@@ -252,7 +257,7 @@ export default function Navbar({
               onOpenMobileMenu();
             }}
             type="button"
-            className="md:hidden p-2 rounded-full border border-white/10 hover:border-white text-white hover:text-accent-lime transition-colors"
+            className="md:hidden w-11 h-11 flex items-center justify-center rounded-full border border-white/10 hover:border-white text-white hover:text-accent-lime transition-colors"
             aria-label="Open full-screen navigation menu"
           >
             <Menu className="w-4 h-4" />

@@ -142,10 +142,10 @@ export default function ScrollExpandMedia({
     <div
       ref={containerRef}
       id={id}
-      className="relative w-full min-h-[220vh] bg-editorial-black"
+      className="relative w-full min-h-[160vh] sm:min-h-[180vh] md:min-h-[220vh] bg-editorial-black"
     >
       {/* Sticky Viewport Frame */}
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-screen sm:h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden">
         {/* Background Mood Image (fades out as media expands) */}
         <motion.div
           className="absolute inset-0 z-0 h-full w-full pointer-events-none will-change-transform"
@@ -163,17 +163,17 @@ export default function ScrollExpandMedia({
         </motion.div>
 
         {/* Top Floating Badge & Controls */}
-        <div className="absolute top-6 left-6 md:left-12 z-20 flex items-center gap-3 pointer-events-none">
-          <div className="w-2 h-2 rounded-full bg-accent-lime animate-pulse" />
-          <span className="font-mono text-[10px] sm:text-xs tracking-[0.25em] uppercase text-editorial-text-muted">
-            35mm Visual Monograph Reel
+        <div className="absolute top-4 sm:top-6 left-4 sm:left-6 md:left-12 z-20 flex items-center gap-2 sm:gap-3 pointer-events-none">
+          <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-accent-lime animate-pulse" />
+          <span className="font-mono text-[9px] sm:text-xs tracking-[0.2em] sm:tracking-[0.25em] uppercase text-editorial-text-muted">
+            35mm Visual Monograph
           </span>
         </div>
 
-        <div className="absolute top-6 right-6 md:right-12 z-20 flex items-center gap-2">
+        <div className="absolute top-4 sm:top-6 right-4 sm:right-6 md:right-12 z-20 flex items-center gap-2">
           <button
             onClick={toggleExpand}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-editorial-black/80 hover:bg-editorial-black border border-white/15 hover:border-accent-lime/60 backdrop-blur-md transition-colors text-editorial-text hover:text-white font-mono text-[11px] tracking-wider uppercase group"
+            className="flex items-center gap-2 px-3 sm:px-3.5 py-2 sm:py-1.5 min-h-[44px] rounded-full bg-editorial-black/80 hover:bg-editorial-black border border-white/15 hover:border-accent-lime/60 backdrop-blur-md transition-colors text-editorial-text hover:text-white font-mono text-[11px] tracking-wider uppercase group"
             title={isExpanded ? 'Collapse Monograph' : 'Expand Monograph'}
             aria-label={isExpanded ? 'Collapse Monograph' : 'Expand Monograph'}
           >
@@ -192,10 +192,10 @@ export default function ScrollExpandMedia({
         </div>
 
         {/* Center Stage: Transforming Media & Titles */}
-        <div className="relative z-10 w-full max-w-7xl px-4 sm:px-6 flex flex-col items-center justify-center">
+        <div className="relative z-10 w-full max-w-7xl px-3 sm:px-6 flex flex-col items-center justify-center">
           {/* Morphing Media Card Container (GPU-scaled via transform: scale) */}
           <motion.div
-            className="relative w-[92vw] sm:w-[86vw] md:w-[78vw] max-w-5xl aspect-[16/10] sm:aspect-[16/9] max-h-[78vh] rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 bg-neutral-950 will-change-transform shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
+            className="relative w-[94vw] sm:w-[86vw] md:w-[78vw] max-w-5xl aspect-[16/10] sm:aspect-[16/9] max-h-[72vh] sm:max-h-[78vh] rounded-xl sm:rounded-2xl overflow-hidden border border-white/15 bg-neutral-950 will-change-transform shadow-[0_10px_40px_rgba(0,0,0,0.8)]"
             style={{
               scale,
               transformOrigin: 'center center'
@@ -245,6 +245,7 @@ export default function ScrollExpandMedia({
                     muted={isMuted}
                     loop
                     playsInline
+                    webkit-playsinline="true"
                     preload="metadata"
                     onError={() => setVideoError(true)}
                     className="w-full h-full object-cover"
@@ -257,21 +258,21 @@ export default function ScrollExpandMedia({
                     style={{ opacity: scrimOpacity }}
                   />
 
-                  {/* Playback Controls (hover reveal) */}
-                  <div className="absolute bottom-4 right-4 z-30 flex items-center gap-2 bg-editorial-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {/* Playback Controls (visible on touch, hover reveal on desktop) */}
+                  <div className="absolute bottom-4 right-4 z-30 flex items-center gap-1 bg-editorial-black/80 backdrop-blur-md p-1 rounded-full border border-white/10 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={toggleVideo}
-                      className="p-1 text-editorial-text hover:text-accent-lime transition-colors"
+                      className="min-w-[44px] min-h-[44px] flex items-center justify-center text-editorial-text hover:text-accent-lime transition-colors"
                       aria-label={isPlaying ? 'Pause video' : 'Play video'}
                     >
-                      {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                      {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                     </button>
                     <button
                       onClick={toggleMute}
-                      className="p-1 text-editorial-text hover:text-accent-lime transition-colors"
+                      className="min-w-[44px] min-h-[44px] flex items-center justify-center text-editorial-text hover:text-accent-lime transition-colors"
                       aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
                     >
-                      {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
