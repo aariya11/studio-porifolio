@@ -25,23 +25,28 @@ Reviewed in high-stakes creative environments: high-resolution 4K/5K displays in
 ## Capabilities and Constraints
 
 - Curated multi-format editorial masonry grid with dynamic category filters (Editorial, Fashion, Portrait, Commercial, Travel, Architecture).
+- 35mm cinematic visual monograph reel with scroll-driven expansion (`ScrollExpandMedia`) featuring full-bleed aspect scaling, split-title reveals, and archival contact sheets.
 - Dedicated deep-linked project photo-story views with asymmetric two-column spreads, photographer field notes, and camera EXIF metadata.
 - Fullscreen blacked-out image lightbox featuring 1.5x zoom inspection, keyboard arrow navigation, and touch swipe gestures.
 - Strictly validated commission inquiry form with budget range selection, anti-spam honeypot, and mandatory GDPR-compliant consent gate.
 - Synthesized Web Audio API tactile shutter audio feedback (muted by default with persistent user toggle).
+- WebGL2 Cauchy dispersion liquid metal shader with GPU sleep tracking.
+- Proximity-magnifying floating navigation dock with specular conic rim lighting.
 - Completely isolated, CMS-ready data architecture in `src/data/portfolioData.js` allowing rapid rebranding or client handover.
-- Fast, static-deployable client-side React 19 + Vite architecture with zero external backend latency.
+- Fast, static-deployable client-side React 19 + Vite architecture with zero external backend latency and locked 60-120fps rendering.
 
 ## Brand Commitments
 
 - **Identity**: Alex Kane — Art Director & Editorial Photographer.
 - **Studios**: Dual operational bases in Paris (14 Rue de Turenne, Le Marais) and Tokyo (Minami-Aoyama, Minato-ku).
 - **Visual Language**: Deep obsidian black (`#070708`), off-white typography (`#f5f5f3`), hairline framing borders, and restrained Electric Lime accents (`#C3E41D`).
+- **Typography Stack**: Cabinet Grotesk (body sans), Syne (display headers), Playfair Display (editorial pull-quotes), and JetBrains Mono (technical EXIF metadata).
 - **Voice**: Quiet, dignified, authoritative, and direct. Rejection of marketing jargon in favor of editorial rigor and photographic craft.
 
 ## Evidence on Hand
 
 - 8 complete multi-image editorial photo stories with authentic camera and lens metadata (Leica M11, Hasselblad H6D-100c, Phase One IQ4 150MP).
+- Complete 35mm nocturnal monograph series ("Kyoto Chronicles") with Kodak Vision3 500T emulsion and binaural soundscape specifications.
 - 4 illustrated critical essays on lighting geometry, sub-zero analogue operation, and portraiture ethics.
 - Transparently disclosed editorial client placeholders (Vogue, GQ, Acne Studios, Leica, Nike Lab).
 - Real-time synchronized CET and JST world clocks.
