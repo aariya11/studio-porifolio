@@ -480,8 +480,20 @@ export default function LiquidMetalButton({
     let animId;
     let lastDraw = 0;
     const IDLE_HZ = 30;
+    let isVisible = true;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      const wasVisible = isVisible;
+      isVisible = entry.isIntersecting;
+      if (isVisible && !wasVisible) {
+        last = performance.now();
+        animId = requestAnimationFrame(renderLoop);
+      }
+    }, { threshold: 0.01 });
+    observer.observe(container);
 
     function renderLoop(now) {
+      if (!isVisible) return;
       animId = requestAnimationFrame(renderLoop);
       const dtRaw = (now - last) / 1000;
       last = now;
@@ -622,6 +634,7 @@ export default function LiquidMetalButton({
 
     return () => {
       cancelAnimationFrame(animId);
+      observer.disconnect();
       resizeObserver.disconnect();
       btn.removeEventListener('pointerenter', handlePointerEnter);
       btn.removeEventListener('pointerleave', handlePointerLeave);

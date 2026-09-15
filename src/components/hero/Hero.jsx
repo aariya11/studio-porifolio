@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ChevronDown, Compass, Sparkles } from 'lucide-react';
 import { PHOTOGRAPHER_CONFIG } from '../../data/portfolioData';
 import BlurText from '../common/BlurText';
@@ -7,6 +7,67 @@ import { playShutterSound } from '../../utils/sound';
 
 export default function Hero({ onExploreClick }) {
   const heroRef = useRef(null);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    let pointerX = 0, pointerY = 0;
+    let smoothX = 0, smoothY = 0;
+    let lastX = null, lastY = null;
+    let animId;
+    let isVisible = true;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+    }, { threshold: 0.05 });
+    observer.observe(hero);
+
+    const handlePointerMove = (e) => {
+      if (e.pointerType === 'touch' || !isVisible) return;
+      const rect = hero.getBoundingClientRect();
+      pointerX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    };
+
+    const handlePointerLeave = () => {
+      pointerX = 0;
+      pointerY = 0;
+    };
+
+    hero.addEventListener('pointermove', handlePointerMove, { passive: true });
+    hero.addEventListener('pointerleave', handlePointerLeave);
+
+    const loop = () => {
+      animId = requestAnimationFrame(loop);
+      if (!isVisible) return;
+
+      smoothX += (pointerX - smoothX) * 0.055;
+      smoothY += (pointerY - smoothY) * 0.055;
+
+      const nx = Math.round(smoothX * 1000) / 1000;
+      const ny = Math.round(smoothY * 1000) / 1000;
+
+      if (nx !== lastX || ny !== lastY) {
+        lastX = nx;
+        lastY = ny;
+        hero.style.setProperty('--px', nx);
+        hero.style.setProperty('--py', ny);
+      }
+    };
+
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+      hero.removeEventListener('pointermove', handlePointerMove);
+      hero.removeEventListener('pointerleave', handlePointerLeave);
+    };
+  }, []);
 
   return (
     <section

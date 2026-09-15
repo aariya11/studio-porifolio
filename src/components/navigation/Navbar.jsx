@@ -47,14 +47,25 @@ export default function Navbar({
     };
     updateMeasurements();
 
+    let isNearNav = false;
+
     const handlePointerMove = (e) => {
       if (e.pointerType === 'touch') return;
       aimX = e.clientX;
       aimY = e.clientY;
-      aimSeen = true;
 
+      // Only check proximity if near top of screen
+      if (aimY > 160) {
+        if (isNearNav) {
+          isNearNav = false;
+          nav.style.setProperty('--spec-bright', '0');
+          itemStates.forEach((st) => { st.target = 0; });
+        }
+        return;
+      }
+
+      isNearNav = true;
       const r = nav.getBoundingClientRect();
-      // Calculate angle and brightness for specular conic rim
       const cx = r.left + r.width * 0.5;
       const cy = r.top + r.height * 0.5;
       const dx = Math.max(r.left - aimX, 0, aimX - r.right);
@@ -65,23 +76,22 @@ export default function Navbar({
         ? Math.atan2(2, -2) + ((aimX - cx) / (r.width * 0.5)) * 0.3
         : Math.atan2(cy - aimY, aimX - cx);
 
-      const raw = Math.max(0, Math.min(1, 1 - d / 220));
-      const targetBright = raw * raw * (3 - 2 * raw);
+      const raw = Math.max(0, Math.min(1, 1 - d / 180));
+      const targetBright = raw * raw;
 
-      specAngle += (((targetAngle - specAngle + Math.PI * 3) % (Math.PI * 2)) - Math.PI) * 0.2;
-      specBright += (targetBright - specBright) * 0.2;
+      specAngle += (((targetAngle - specAngle + Math.PI * 3) % (Math.PI * 2)) - Math.PI) * 0.25;
+      specBright += (targetBright - specBright) * 0.25;
 
-      nav.style.setProperty('--spec-angle', `${specAngle.toFixed(4)}rad`);
-      nav.style.setProperty('--spec-bright', `${(specBright * 0.95).toFixed(3)}`);
+      nav.style.setProperty('--spec-angle', `${specAngle.toFixed(3)}rad`);
+      nav.style.setProperty('--spec-bright', `${(specBright * 0.9).toFixed(2)}`);
 
-      // Proximity magnification across pills
-      if (aimX > r.left - 40 && aimX < r.right + 40 && aimY > r.top - 40 && aimY < r.bottom + 60) {
+      if (aimX > r.left - 20 && aimX < r.right + 20 && aimY < r.bottom + 40) {
         itemStates.forEach((st) => {
           if (!st.el) return;
           const ir = st.el.getBoundingClientRect();
           const dist = Math.abs(aimX - (ir.left + ir.width * 0.5));
-          const prox = Math.max(0, Math.min(1, 1 - dist / 110));
-          st.target = prox * prox * (3 - 2 * prox);
+          const prox = Math.max(0, Math.min(1, 1 - dist / 90));
+          st.target = prox * prox;
         });
       } else {
         itemStates.forEach((st) => { st.target = 0; });
@@ -89,7 +99,7 @@ export default function Navbar({
     };
 
     const handlePointerLeave = () => {
-      aimSeen = false;
+      isNearNav = false;
       nav.style.setProperty('--spec-bright', '0');
       itemStates.forEach((st) => { st.target = 0; });
     };
@@ -97,27 +107,33 @@ export default function Navbar({
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.addEventListener('pointerleave', handlePointerLeave);
 
-    // Spring physics animation loop for dock items
+    // Spring physics animation loop - only writes to DOM when active
     let lastTime = performance.now();
+    let isSettled = true;
+
     const loop = (now) => {
       animId = requestAnimationFrame(loop);
       const dt = Math.min((now - lastTime) / 1000, 0.05);
       lastTime = now;
 
+      let anyMoving = false;
       itemStates.forEach((st) => {
         if (!st.el) return;
-        st.vel += (st.target - st.v) * 180 * dt;
-        st.vel *= Math.exp(-22 * dt);
-        st.v += st.vel * dt;
+        const diff = st.target - st.v;
+        if (Math.abs(diff) > 0.001 || Math.abs(st.vel) > 0.002) {
+          anyMoving = true;
+          st.vel += diff * 200 * dt;
+          st.vel *= Math.exp(-24 * dt);
+          st.v += st.vel * dt;
 
-        if (Math.abs(st.target - st.v) < 0.002 && Math.abs(st.vel) < 0.004) {
-          st.v = st.target;
+          const scale = 1 + st.v * 0.12;
+          const translateY = st.v * 2.5;
+          st.el.style.transform = `translateY(${translateY.toFixed(1)}px) scale(${scale.toFixed(3)})`;
+        } else if (st.v !== 0) {
+          st.v = 0;
           st.vel = 0;
+          st.el.style.transform = '';
         }
-
-        const scale = 1 + st.v * 0.14;
-        const translateY = st.v * 3;
-        st.el.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(3)})`;
       });
     };
 
