@@ -77,14 +77,10 @@ export default function ScrollExpandMedia({
   const scrimOpacity = useTransform(scrollYProgress, [0, 0.7], [0.6, 0.15]);
   const hintOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
 
-  // Reveal children once expanded
-  const contentOpacity = useTransform(scrollYProgress, [0.72, 0.88], [0, 1]);
-  const contentY = useTransform(scrollYProgress, [0.72, 0.88], [30, 0]);
-
   // Listen to milestone for sound trigger & state flag without continuous re-renders
   useEffect(() => {
     const unsubscribe = scrollYProgress.on('change', (v) => {
-      if (v >= 0.72 && !audioFiredRef.current) {
+      if (v >= 0.75 && !audioFiredRef.current) {
         playShutterSound();
         audioFiredRef.current = true;
         setIsExpanded(true);
@@ -100,13 +96,13 @@ export default function ScrollExpandMedia({
   const toggleExpand = useCallback(() => {
     playFocusClick();
     if (!containerRef.current) return;
-    const top = containerRef.current.offsetTop;
+    const top = containerRef.current.getBoundingClientRect().top + window.scrollY;
     const height = containerRef.current.offsetHeight;
 
     if (isExpanded) {
       window.scrollTo({ top, behavior: 'smooth' });
     } else {
-      window.scrollTo({ top: top + height * 0.75, behavior: 'smooth' });
+      window.scrollTo({ top: top + height * 0.85, behavior: 'smooth' });
       playShutterSound();
     }
   }, [isExpanded]);
@@ -139,13 +135,14 @@ export default function ScrollExpandMedia({
   const restOfTitle = titleWords.slice(1).join(' ') || '';
 
   return (
-    <div
-      ref={containerRef}
-      id={id}
-      className="relative w-full min-h-[160vh] sm:min-h-[180vh] md:min-h-[220vh] bg-editorial-black"
-    >
-      {/* Sticky Viewport Frame */}
-      <div className="sticky top-0 h-screen sm:h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden">
+    <div id={id} className="relative w-full bg-editorial-black">
+      {/* 1. Dedicated Scroll-Expand Media Runway */}
+      <div
+        ref={containerRef}
+        className="relative w-full h-[150vh] sm:h-[180vh] md:h-[200vh]"
+      >
+        {/* Sticky Viewport Frame */}
+        <div className="sticky top-0 h-screen sm:h-[100dvh] w-full flex flex-col items-center justify-center overflow-hidden">
         {/* Background Mood Image (fades out as media expands) */}
         <motion.div
           className="absolute inset-0 z-0 h-full w-full pointer-events-none will-change-transform"
@@ -351,15 +348,13 @@ export default function ScrollExpandMedia({
           </motion.div>
         </div>
       </div>
+      </div>
 
-      {/* Children Section: Editorial Content Revealed Once Expanded */}
+      {/* 2. Children Section: Editorial Folio & Archival Plates Rendered Outside Sticky Runway */}
       {children && (
-        <motion.section
-          className="relative z-20 flex flex-col w-full px-6 py-16 sm:py-24 md:px-16 lg:px-24 bg-editorial-black border-t border-white/10 will-change-transform"
-          style={{ opacity: contentOpacity, y: contentY }}
-        >
+        <section className="relative z-20 flex flex-col w-full px-4 sm:px-8 md:px-16 lg:px-24 py-20 sm:py-28 bg-editorial-black border-t border-white/10">
           {children}
-        </motion.section>
+        </section>
       )}
     </div>
   );

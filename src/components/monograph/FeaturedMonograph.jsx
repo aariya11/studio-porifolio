@@ -11,7 +11,7 @@ export default function FeaturedMonograph({ onSelectProject, onOpenLightbox, onI
   // Stills from the Kyoto / Tokyo film series
   const monographStills = [
     {
-      src: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=85',
+      src: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=85',
       caption: 'Plate I — Rain over Kabukicho crossing, 03:42 AM',
       exif: 'Leica M11 • Noctilux 50mm • f/1.0 • 1/125s'
     },
@@ -21,7 +21,7 @@ export default function FeaturedMonograph({ onSelectProject, onOpenLightbox, onI
       exif: 'Leica M11 • Summicron 35mm • f/2.0 • 1/60s'
     },
     {
-      src: 'https://images.unsplash.com/photo-1528164344705-475426879c0d?auto=format&fit=crop&w=1200&q=85',
+      src: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1200&q=85',
       caption: 'Plate III — Dissolving mist over the Kamogawa riverbed',
       exif: 'Leica M11 • Elmarit 28mm • f/4.0 • 1/250s'
     }
@@ -51,7 +51,7 @@ export default function FeaturedMonograph({ onSelectProject, onOpenLightbox, onI
       <ScrollExpandMedia
         mediaType="video"
         mediaSrc="https://assets.mixkit.co/videos/preview/mixkit-silhouette-of-a-person-standing-in-front-of-a-window-41588-large.mp4"
-        posterSrc="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1800&q=85"
+        posterSrc="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1800&q=85"
         bgImageSrc="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=2000&q=85"
         title="KYOTO CHRONICLES"
         date="LIMITED MONOGRAPH / 2026"
