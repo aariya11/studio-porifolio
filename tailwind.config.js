@@ -25,10 +25,10 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Syne', 'Space Grotesk', 'sans-serif'],
+        sans: ['Cabinet Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Syne', 'Cabinet Grotesk', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+        mono: ['JetBrains Mono', 'monospace']
       },
       animation: {
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',

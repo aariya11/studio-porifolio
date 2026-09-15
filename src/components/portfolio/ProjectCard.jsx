@@ -54,7 +54,7 @@ export default function ProjectCard({
           alt={`${project.title} — ${project.category} Photography by Alex Kane`}
           onLoad={() => setIsLoaded(true)}
           loading="lazy"
-          className={`w-full h-full object-cover filter contrast-[1.08] transition-all duration-700 ease-out group-hover:scale-105 group-hover:contrast-125 ${
+          className={`w-full h-full object-cover filter contrast-[1.08] transition-all duration-700 ease-out group-hover:contrast-[1.12] ${
             isLoaded ? 'opacity-90' : 'opacity-0'
           }`}
         />

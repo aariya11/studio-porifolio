@@ -153,7 +153,7 @@ export default function ProjectStoryModal({
             <img
               src={project.coverImage}
               alt={`${project.title} opening plate`}
-              className="w-full h-auto max-h-[85vh] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+              className="w-full h-auto max-h-[85vh] object-cover"
             />
             <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-white font-mono text-xs flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
               <Expand className="w-3.5 h-3.5 text-accent-lime" /> FULLSCREEN
@@ -165,17 +165,16 @@ export default function ProjectStoryModal({
           </div>
         </section>
 
-        {/* Photographer Notes Quote Box */}
+        {/* Photographer Field Note Pull-Quote */}
         {project.photographerNotes && (
-          <blockquote className="my-20 p-8 sm:p-12 border-l-2 border-accent-lime bg-white/[0.02] rounded-r-md">
-            <div className="font-mono text-xs uppercase tracking-widest text-accent-lime mb-3">
-              [ PHOTOGRAPHER FIELD NOTE ]
-            </div>
-            <p className="font-serif italic text-xl sm:text-2xl md:text-3xl text-white/95 leading-snug">
-              "{project.photographerNotes}"
+          <blockquote className="my-20 py-12 px-6 sm:px-12 border-y border-white/10 bg-editorial-black flex flex-col items-center text-center max-w-4xl mx-auto">
+            <span className="font-serif text-5xl text-accent-lime leading-none mb-2 select-none">“</span>
+            <p className="font-serif italic text-xl sm:text-2xl md:text-3xl text-white/95 leading-relaxed font-light">
+              {project.photographerNotes}
             </p>
-            <div className="mt-4 font-mono text-xs text-neutral-500 uppercase">
-              — Alex Kane, On Location
+            <div className="mt-6 flex items-center gap-3 font-mono text-xs text-editorial-muted uppercase tracking-widest">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-lime" />
+              <span>Alex Kane — Field Notes</span>
             </div>
           </blockquote>
         )}
@@ -191,12 +190,12 @@ export default function ProjectStoryModal({
                   playShutterSound();
                   onOpenLightbox(allImages, 1, project.title);
                 }}
-                className="md:col-span-7 group cursor-pointer border border-editorial-border rounded overflow-hidden bg-editorial-card shadow-xl"
+                className="md:col-span-7 group cursor-pointer border border-editorial-border hover:border-editorial-borderHover rounded overflow-hidden bg-editorial-card shadow-xl transition-colors"
               >
                 <img
                   src={project.storySpread[0].src}
                   alt={project.storySpread[0].caption}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
                 <div className="p-4 border-t border-editorial-border font-mono text-xs text-neutral-400 flex justify-between">
                   <span>{project.storySpread[0].caption}</span>
@@ -210,12 +209,12 @@ export default function ProjectStoryModal({
                   playShutterSound();
                   onOpenLightbox(allImages, 2, project.title);
                 }}
-                className="md:col-span-5 group cursor-pointer border border-editorial-border rounded overflow-hidden bg-editorial-card shadow-xl md:-translate-y-8"
+                className="md:col-span-5 group cursor-pointer border border-editorial-border hover:border-editorial-borderHover rounded overflow-hidden bg-editorial-card shadow-xl transition-colors md:-translate-y-8"
               >
                 <img
                   src={project.storySpread[1].src}
                   alt={project.storySpread[1].caption}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
                 <div className="p-4 border-t border-editorial-border font-mono text-xs text-neutral-400 flex justify-between">
                   <span>{project.storySpread[1].caption}</span>
@@ -233,12 +232,12 @@ export default function ProjectStoryModal({
                 playShutterSound();
                 onOpenLightbox(allImages, 3, project.title);
               }}
-              className="group cursor-pointer border border-editorial-border rounded overflow-hidden bg-editorial-card shadow-xl"
+              className="group cursor-pointer border border-editorial-border hover:border-editorial-borderHover rounded overflow-hidden bg-editorial-card shadow-xl transition-colors"
             >
               <img
                 src={project.storySpread[2].src}
                 alt={project.storySpread[2].caption}
-                className="w-full max-h-[70vh] object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+                className="w-full max-h-[70vh] object-cover"
               />
               <div className="p-4 sm:p-6 border-t border-editorial-border font-mono text-xs text-neutral-400 flex justify-between">
                 <span>{project.storySpread[2].caption}</span>

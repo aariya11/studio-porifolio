@@ -80,12 +80,6 @@ export default function Contact({ preselectedService, onOpenLegal }) {
       className="relative py-28 sm:py-36 px-4 sm:px-8 md:px-12 bg-[#070708] border-t border-editorial-border/60"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Tag */}
-        <div className="font-mono text-xs text-accent-lime uppercase tracking-widest mb-6 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-accent-lime" />
-          <span>07 / INITIATE AN ENQUIRY</span>
-        </div>
-
         {/* Dramatic Editorial Headline */}
         <div className="border-b border-editorial-border pb-16 mb-16 sm:mb-20">
           <h2 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tighter uppercase text-white leading-[0.9] max-w-5xl">

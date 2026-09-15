@@ -7,12 +7,11 @@ export default function Clients() {
       <div className="max-w-7xl mx-auto">
         {/* Header & Notice */}
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pb-8 border-b border-editorial-border/60 font-mono text-xs">
-          <div className="text-accent-lime uppercase tracking-widest flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent-lime" />
-            <span>05 / SELECTED EDITORIAL & BRAND PARTNERS</span>
+          <div className="text-white uppercase tracking-widest font-medium">
+            SELECTED EDITORIAL & BRAND PARTNERS
           </div>
-          <div className="text-neutral-400 text-[11px]">
-            [ CURATED COMMISSIONS & PLACEHOLDERS ]
+          <div className="text-neutral-400 text-[11px] uppercase tracking-wider">
+            COMMISSIONS & CAMPAIGNS
           </div>
         </div>
 

@@ -36,10 +36,6 @@ export default function PortfolioGrid({ onSelectProject }) {
         {/* Section Metadata & Title */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-editorial-border/60">
           <div>
-            <div className="font-mono text-xs text-accent-lime uppercase tracking-widest mb-3 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent-lime" />
-              <span>02 / EDITORIAL ARCHIVE</span>
-            </div>
             <h2 className="font-display font-black text-4xl sm:text-6xl md:text-7xl uppercase tracking-tighter text-white">
               SELECTED WORKS
             </h2>

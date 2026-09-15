@@ -18,10 +18,6 @@ export default function Journal({ onSelectArticle }) {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-12 border-b border-editorial-border/60">
           <div>
-            <div className="font-mono text-xs text-accent-lime uppercase tracking-widest mb-3 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-accent-lime" />
-              <span>06 / CRITICAL ESSAYS & FIELD NOTES</span>
-            </div>
             <h2 className="font-display font-black text-4xl sm:text-6xl md:text-7xl uppercase tracking-tighter text-white">
               THE JOURNAL
             </h2>
@@ -47,7 +43,7 @@ export default function Journal({ onSelectArticle }) {
                   <img
                     src={post.cover}
                     alt={post.title}
-                    className="w-full h-full object-cover filter contrast-105 transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover filter contrast-105"
                   />
                   <div className="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded font-mono text-[10px] text-accent-lime uppercase tracking-wider border border-white/10">
                     {post.category}

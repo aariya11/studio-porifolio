@@ -10,12 +10,6 @@ export default function About() {
       className="relative py-28 sm:py-36 px-4 sm:px-8 md:px-12 bg-[#070708] border-t border-editorial-border/60"
     >
       <div className="max-w-7xl mx-auto">
-        {/* Section Number & Top Indicator */}
-        <div className="font-mono text-xs text-accent-lime uppercase tracking-widest mb-6 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-accent-lime" />
-          <span>03 / ARTISTIC PHILOSOPHY & PRACTICE</span>
-        </div>
-
         {/* Large Editorial Manifesto Statement */}
         <div className="border-b border-editorial-border pb-16">
           <h2 className="font-serif italic text-3xl sm:text-5xl md:text-6xl lg:text-7xl text-white font-normal leading-[1.1] max-w-5xl">

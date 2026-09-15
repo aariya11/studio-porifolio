@@ -162,7 +162,7 @@ export default function Hero({ onExploreClick }) {
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=85"
                 alt="Portrait Focus"
-                className="w-full h-full object-cover grayscale contrast-125 brightness-95 group-hover:scale-110 group-hover:grayscale-0 transition-all duration-700"
+                className="w-full h-full object-cover grayscale contrast-125 brightness-95 group-hover:grayscale-0 transition-all duration-700"
               />
               <div className="absolute inset-0 bg-accent-lime/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
