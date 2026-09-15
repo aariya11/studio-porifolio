@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/navigation/Navbar';
 import MobileMenu from './components/navigation/MobileMenu';
 import Hero from './components/hero/Hero';
+import FeaturedMonograph from './components/monograph/FeaturedMonograph';
 import PortfolioGrid from './components/portfolio/PortfolioGrid';
 import Lightbox from './components/portfolio/Lightbox';
 import ProjectStoryModal from './components/project/ProjectStoryModal';
@@ -202,9 +203,9 @@ export default function App() {
   // Scroll to explore handler
   const handleExploreClick = () => {
     playFocusClick();
-    const workElem = document.getElementById('work');
-    if (workElem) {
-      workElem.scrollIntoView({ behavior: 'smooth' });
+    const monographElem = document.getElementById('monograph') || document.getElementById('work');
+    if (monographElem) {
+      monographElem.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -249,7 +250,14 @@ export default function App() {
         {/* 01: Hero Section */}
         <Hero onExploreClick={handleExploreClick} />
 
-        {/* 02: Work Archive (Masonry Editorial Grid with 3D Depth & Scan Plates) */}
+        {/* 02: Featured 35mm Visual Monograph Reel (ScrollExpandMedia Animation) */}
+        <FeaturedMonograph
+          onSelectProject={handleSelectProject}
+          onOpenLightbox={handleOpenLightbox}
+          onInquireService={handleSelectServiceForInquiry}
+        />
+
+        {/* 03: Work Archive (Masonry Editorial Grid with 3D Depth & Scan Plates) */}
         <PortfolioGrid onSelectProject={handleSelectProject} />
 
         {/* 03: Editorial About & Practice */}

@@ -55,10 +55,11 @@ export default function MobileMenu({
 
   const navLinks = [
     { label: 'WORK', href: '#work', number: '01' },
-    { label: 'ABOUT', href: '#about', number: '02' },
-    { label: 'SERVICES', href: '#services', number: '03' },
-    { label: 'JOURNAL', href: '#journal', number: '04' },
-    { label: 'CONTACT', href: '#contact', number: '05' },
+    { label: 'MONOGRAPH', href: '#monograph', number: '02' },
+    { label: 'ABOUT', href: '#about', number: '03' },
+    { label: 'SERVICES', href: '#services', number: '04' },
+    { label: 'JOURNAL', href: '#journal', number: '05' },
+    { label: 'CONTACT', href: '#contact', number: '06' },
   ];
 
   const handleLinkClick = (href) => {

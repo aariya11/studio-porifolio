@@ -132,6 +132,7 @@ export default function Navbar({
 
   const navItems = [
     { label: 'WORK', href: '#work', id: 'work' },
+    { label: 'MONOGRAPH', href: '#monograph', id: 'monograph' },
     { label: 'ABOUT', href: '#about', id: 'about' },
     { label: 'SERVICES', href: '#services', id: 'services' },
     { label: 'JOURNAL', href: '#journal', id: 'journal' },
