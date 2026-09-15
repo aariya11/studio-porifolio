@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, Volume2, VolumeX, Circle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, Volume2, VolumeX, Compass } from 'lucide-react';
 import { PHOTOGRAPHER_CONFIG } from '../../data/portfolioData';
 import { playFocusClick, playShutterSound } from '../../utils/sound';
 
@@ -10,13 +10,124 @@ export default function Navbar({
   onToggleSound
 }) {
   const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef(null);
+  const itemsRef = useRef([]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Specular rim tracking and dock proximity magnification from Sylva
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+
+    let aimX = 0, aimY = 0, aimSeen = false;
+    let specAngle = 2.4, specBright = 0;
+    let animId;
+
+    const navItems = itemsRef.current.filter(Boolean);
+    const itemStates = navItems.map((el) => ({
+      el,
+      v: 0,
+      vel: 0,
+      target: 0,
+      w: 0
+    }));
+
+    const updateMeasurements = () => {
+      itemStates.forEach((st) => {
+        if (st.el) {
+          const r = st.el.getBoundingClientRect();
+          st.w = r.width;
+        }
+      });
+    };
+    updateMeasurements();
+
+    const handlePointerMove = (e) => {
+      if (e.pointerType === 'touch') return;
+      aimX = e.clientX;
+      aimY = e.clientY;
+      aimSeen = true;
+
+      const r = nav.getBoundingClientRect();
+      // Calculate angle and brightness for specular conic rim
+      const cx = r.left + r.width * 0.5;
+      const cy = r.top + r.height * 0.5;
+      const dx = Math.max(r.left - aimX, 0, aimX - r.right);
+      const dy = Math.max(r.top - aimY, 0, aimY - r.bottom);
+      const d = Math.hypot(dx, dy);
+
+      const targetAngle = d === 0
+        ? Math.atan2(2, -2) + ((aimX - cx) / (r.width * 0.5)) * 0.3
+        : Math.atan2(cy - aimY, aimX - cx);
+
+      const raw = Math.max(0, Math.min(1, 1 - d / 220));
+      const targetBright = raw * raw * (3 - 2 * raw);
+
+      specAngle += (((targetAngle - specAngle + Math.PI * 3) % (Math.PI * 2)) - Math.PI) * 0.2;
+      specBright += (targetBright - specBright) * 0.2;
+
+      nav.style.setProperty('--spec-angle', `${specAngle.toFixed(4)}rad`);
+      nav.style.setProperty('--spec-bright', `${(specBright * 0.95).toFixed(3)}`);
+
+      // Proximity magnification across pills
+      if (aimX > r.left - 40 && aimX < r.right + 40 && aimY > r.top - 40 && aimY < r.bottom + 60) {
+        itemStates.forEach((st) => {
+          if (!st.el) return;
+          const ir = st.el.getBoundingClientRect();
+          const dist = Math.abs(aimX - (ir.left + ir.width * 0.5));
+          const prox = Math.max(0, Math.min(1, 1 - dist / 110));
+          st.target = prox * prox * (3 - 2 * prox);
+        });
+      } else {
+        itemStates.forEach((st) => { st.target = 0; });
+      }
+    };
+
+    const handlePointerLeave = () => {
+      aimSeen = false;
+      nav.style.setProperty('--spec-bright', '0');
+      itemStates.forEach((st) => { st.target = 0; });
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('pointerleave', handlePointerLeave);
+
+    // Spring physics animation loop for dock items
+    let lastTime = performance.now();
+    const loop = (now) => {
+      animId = requestAnimationFrame(loop);
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      itemStates.forEach((st) => {
+        if (!st.el) return;
+        st.vel += (st.target - st.v) * 180 * dt;
+        st.vel *= Math.exp(-22 * dt);
+        st.v += st.vel * dt;
+
+        if (Math.abs(st.target - st.v) < 0.002 && Math.abs(st.vel) < 0.004) {
+          st.v = st.target;
+          st.vel = 0;
+        }
+
+        const scale = 1 + st.v * 0.14;
+        const translateY = st.v * 3;
+        st.el.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(3)})`;
+      });
+    };
+
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerleave', handlePointerLeave);
+    };
   }, []);
 
   const navItems = [
@@ -30,6 +141,9 @@ export default function Navbar({
   const handleNavClick = (e, href) => {
     e.preventDefault();
     playFocusClick();
+    if (window.burstAt) {
+      window.burstAt(e.clientX, e.clientY);
+    }
     const target = document.querySelector(href);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
@@ -39,41 +153,44 @@ export default function Navbar({
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-[8000] px-4 sm:px-8 transition-all duration-500 ${
-        scrolled ? 'py-3 sm:py-4' : 'py-5 sm:py-7'
+        scrolled ? 'py-2.5 sm:py-3' : 'py-5 sm:py-6'
       }`}
     >
       <nav
-        aria-label="Main Navigation"
-        className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 rounded-full glass-nav shadow-2xl transition-all duration-300"
+        ref={navRef}
+        data-spec
+        aria-label="Primary Navigation Dock"
+        className="max-w-6xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 rounded-full glass-nav shadow-[0_12px_40px_rgba(0,0,0,0.6)] border border-white/10 transition-all duration-300"
       >
-        {/* Left: Photographer Name & Monogram */}
+        {/* Left: Photographer Monogram with Shutter Spark */}
         <a
           href="#hero"
           onClick={(e) => handleNavClick(e, '#hero')}
           className="group flex items-center gap-2.5 text-white hover:text-accent-lime transition-colors"
           aria-label="Alex Kane Home"
         >
-          <span className="w-7 h-7 rounded-full bg-white/10 group-hover:bg-accent-lime group-hover:text-black flex items-center justify-center font-mono text-xs font-bold transition-all">
+          <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-accent-lime group-hover:text-black flex items-center justify-center font-mono text-xs font-bold transition-all shadow-md">
             {PHOTOGRAPHER_CONFIG.monogram}
           </span>
-          <span className="font-display font-bold text-sm tracking-wider uppercase hidden sm:inline-block">
+          <span className="font-display font-bold text-xs tracking-wider uppercase hidden sm:inline-block">
             {PHOTOGRAPHER_CONFIG.name}
           </span>
         </a>
 
-        {/* Center: Desktop Nav Links with Active Indicator */}
+        {/* Center: Magnifying Dock Navigation Pills */}
         <div className="hidden md:flex items-center gap-1 sm:gap-2">
-          {navItems.map((item) => {
+          {navItems.map((item, idx) => {
             const isActive = activeSection === item.id;
             return (
               <a
                 key={item.label}
+                ref={(el) => (itemsRef.current[idx] = el)}
                 href={item.href}
                 onClick={(e) => handleNavClick(e, item.href)}
-                className={`relative px-3.5 py-1.5 rounded-full font-mono text-xs tracking-wider transition-all duration-300 ${
+                className={`relative px-4 py-1.5 rounded-full font-mono text-xs tracking-wider transition-colors duration-200 will-change-transform ${
                   isActive
-                    ? 'text-black bg-accent-lime font-bold shadow-md'
-                    : 'text-neutral-400 hover:text-white hover:bg-white/5'
+                    ? 'text-black bg-accent-lime font-bold shadow-lg'
+                    : 'text-neutral-400 hover:text-white hover:bg-white/10'
                 }`}
               >
                 {item.label}
@@ -82,10 +199,10 @@ export default function Navbar({
           })}
         </div>
 
-        {/* Right: Availability Indicator & Sound Toggle / Mobile Trigger */}
+        {/* Right: Availability Status & Tactile Controls */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Availability Status Badge (Desktop) */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-editorial-border bg-white/[0.03] text-[11px] font-mono text-neutral-300">
+          {/* Availability Status Badge */}
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.04] text-[11px] font-mono text-neutral-300">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-lime opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-lime"></span>
@@ -93,14 +210,14 @@ export default function Navbar({
             <span className="tracking-wide">COMMISSIONS Q3/Q4</span>
           </div>
 
-          {/* Sound / Shutter Feedback Toggle */}
+          {/* Tactile Leica Shutter Sound Toggle */}
           <button
             onClick={() => {
               onToggleSound();
               if (!soundOn) playShutterSound();
             }}
             type="button"
-            className="p-2 rounded-full border border-editorial-border hover:border-accent-lime text-neutral-400 hover:text-white transition-all duration-300"
+            className="p-2 rounded-full border border-white/10 hover:border-accent-lime text-neutral-400 hover:text-white transition-all duration-300"
             aria-label={soundOn ? "Mute mechanical shutter audio" : "Enable mechanical shutter audio"}
             title={soundOn ? "Mute shutter audio" : "Enable tactile shutter audio"}
           >
@@ -111,14 +228,14 @@ export default function Navbar({
             )}
           </button>
 
-          {/* Mobile Menu Button (Hamburger) */}
+          {/* Mobile Menu Hamburger Button */}
           <button
             onClick={() => {
               playFocusClick();
               onOpenMobileMenu();
             }}
             type="button"
-            className="md:hidden p-2 rounded-full border border-editorial-border hover:border-white text-white hover:text-accent-lime transition-colors"
+            className="md:hidden p-2 rounded-full border border-white/10 hover:border-white text-white hover:text-accent-lime transition-colors"
             aria-label="Open full-screen navigation menu"
           >
             <Menu className="w-4 h-4" />

@@ -1,25 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ArrowDownRight, Compass } from 'lucide-react';
+import React, { useRef } from 'react';
+import { ChevronDown, Compass, Sparkles } from 'lucide-react';
 import { PHOTOGRAPHER_CONFIG } from '../../data/portfolioData';
 import BlurText from '../common/BlurText';
+import LiquidMetalButton from '../common/LiquidMetalButton';
 import { playShutterSound } from '../../utils/sound';
 
 export default function Hero({ onExploreClick }) {
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
-
-  useEffect(() => {
-    // Subtle, restrained mouse parallax
-    const handleMouseMove = (e) => {
-      const { innerWidth, innerHeight } = window;
-      const x = (e.clientX / innerWidth - 0.5) * 16; // Max 8px shift
-      const y = (e.clientY / innerHeight - 0.5) * 16;
-      setMouseOffset({ x, y });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
     <section
@@ -27,13 +14,8 @@ export default function Hero({ onExploreClick }) {
       ref={heroRef}
       className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-editorial-black select-none pt-24 pb-10 px-4 sm:px-8 md:px-12"
     >
-      {/* Cinematic Full-Bleed Photographic Background with Parallax */}
-      <div
-        className="absolute inset-0 z-0 scale-105 transition-transform duration-700 ease-out will-change-transform"
-        style={{
-          transform: `translate3d(${mouseOffset.x * 0.8}px, ${mouseOffset.y * 0.8}px, 0)`,
-        }}
-      >
+      {/* Full-Bleed Photographic Background with Parallax */}
+      <div className="absolute inset-0 z-0 scale-105 par transition-transform duration-700 ease-out will-change-transform" style={{ '--pd': 6, '--pr': 0.6 }}>
         <img
           src={PHOTOGRAPHER_CONFIG.heroPortrait}
           alt={`${PHOTOGRAPHER_CONFIG.name} — Editorial Portrait`}
@@ -41,13 +23,13 @@ export default function Hero({ onExploreClick }) {
           loading="eager"
           fetchPriority="high"
         />
-        {/* Layered cinematic gradients for readable typography */}
+        {/* Layered cinematic gradients */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-[#070708]/60 to-[#070708]/80" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#070708]/90 via-transparent to-[#070708]/90" />
       </div>
 
       {/* Top Metadata Header Line */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 pt-6 border-b border-editorial-border/40 pb-4 font-mono text-[11px] sm:text-xs text-editorial-muted tracking-widest uppercase">
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4 pt-6 border-b border-editorial-border/40 pb-4 font-mono text-[11px] sm:text-xs text-editorial-muted tracking-widest uppercase par" style={{ '--pd': 8, '--pr': 0.8 }}>
         <div className="flex items-center gap-3">
           <span className="text-accent-lime font-bold">01 / ARCHIVE</span>
           <span className="hidden sm:inline text-white/30">•</span>
@@ -65,22 +47,17 @@ export default function Hero({ onExploreClick }) {
       </div>
 
       {/* Centerpiece: Huge Editorial Photographer Name & Portrait Interplay */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto my-auto py-12 flex flex-col items-center justify-center text-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto my-auto py-8 sm:py-12 flex flex-col items-center justify-center text-center">
         {/* Monogram tag */}
-        <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
+        <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-md par" style={{ '--pd': 12, '--pr': 1.0 }}>
           <span className="w-1.5 h-1.5 rounded-full bg-accent-lime" />
           <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-white/80">
             SELECTED PHOTOGRAPHIC MONOGRAPHS
           </span>
         </div>
 
-        {/* Oversized Name with blur reveal animation & subtle 3D tilt */}
-        <div 
-          className="relative w-full flex flex-col items-center justify-center transition-transform duration-500 ease-out"
-          style={{
-            transform: `translate3d(${-mouseOffset.x * 0.5}px, ${-mouseOffset.y * 0.5}px, 0)`,
-          }}
-        >
+        {/* Oversized Name with blur reveal animation & multiplane 3D tilt */}
+        <div className="relative w-full flex flex-col items-center justify-center par" style={{ '--pd': 18, '--pr': 1.2 }}>
           <div className="w-full overflow-visible">
             <h1 className="font-display font-black text-[13vw] sm:text-[14vw] md:text-[13vw] lg:text-[12rem] xl:text-[14rem] leading-[0.8] tracking-tighter uppercase text-white hover:text-accent-lime transition-colors duration-500 select-none">
               <BlurText
@@ -104,10 +81,21 @@ export default function Hero({ onExploreClick }) {
 
           {/* Central Portrait Vignette Bubble */}
           <div 
-            onClick={() => playShutterSound()}
+            onClick={() => {
+              playShutterSound();
+              if (window.burstAt) {
+                const el = document.getElementById('hero-portrait');
+                if (el) {
+                  const r = el.getBoundingClientRect();
+                  window.burstAt(r.left + r.width / 2, r.top + r.height / 2);
+                }
+              }
+            }}
+            id="hero-portrait"
             data-cursor="view"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer"
-            title="Click for mechanical shutter sound"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer par"
+            style={{ '--pd': 24, '--pr': 2.2 }}
+            title="Click for mechanical shutter & spark"
           >
             <div className="relative w-20 h-28 sm:w-28 sm:h-40 md:w-36 md:h-52 rounded-full overflow-hidden border-2 border-accent-lime/60 group-hover:border-accent-lime shadow-[0_0_50px_rgba(0,0,0,0.8)] transition-all duration-500 group-hover:scale-105 group-hover:rotate-1">
               <img
@@ -124,7 +112,7 @@ export default function Hero({ onExploreClick }) {
         </div>
 
         {/* Editorial Subtitle Statement */}
-        <div className="max-w-2xl mx-auto mt-8 sm:mt-12 px-4">
+        <div className="max-w-2xl mx-auto mt-6 sm:mt-10 px-4 par" style={{ '--pd': 14, '--pr': 1.0 }}>
           <p className="font-sans text-base sm:text-lg md:text-xl font-light text-neutral-300 tracking-wide leading-relaxed">
             <BlurText
               text={PHOTOGRAPHER_CONFIG.tagline}
@@ -135,10 +123,21 @@ export default function Hero({ onExploreClick }) {
             />
           </p>
         </div>
+
+        {/* WebGL2 Liquid Metal Dispersion Shader Action Button */}
+        <div className="mt-8 sm:mt-10 par" style={{ '--pd': 16, '--pr': 1.1 }}>
+          <LiquidMetalButton
+            onClick={onExploreClick}
+            ariaLabel="Explore the photographic archive"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-accent-lime" />
+            <span>EXPLORE ARCHIVE</span>
+          </LiquidMetalButton>
+        </div>
       </div>
 
       {/* Bottom Row: Metadata & Scroll Indicator */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex items-end justify-between pt-6 border-t border-editorial-border/40 font-mono text-xs text-editorial-muted">
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex items-end justify-between pt-6 border-t border-editorial-border/40 font-mono text-xs text-editorial-muted par" style={{ '--pd': 10, '--pr': 0.7 }}>
         {/* Left: Global Availability */}
         <div className="flex flex-col gap-1">
           <span className="text-[10px] text-editorial-subtle uppercase tracking-widest">CURRENT ASSIGNMENTS</span>

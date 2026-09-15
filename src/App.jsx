@@ -14,6 +14,7 @@ import Contact from './components/contact/Contact';
 import Footer from './components/footer/Footer';
 import CustomCursor from './components/common/CustomCursor';
 import FilmGrain from './components/common/FilmGrain';
+import AmbientParticles from './components/common/AmbientParticles';
 import CookieConsent from './components/common/CookieConsent';
 import LegalModal from './components/legal/LegalModal';
 import { PROJECTS, JOURNAL_POSTS } from './data/portfolioData';
@@ -45,6 +46,55 @@ export default function App() {
     setSoundOn(newState);
     setSoundEnabled(newState);
   };
+
+  // Coordinated multi-plane pointer parallax engine from Sylva
+  useEffect(() => {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) return;
+
+    let pointerX = 0, pointerY = 0;
+    let smoothX = 0, smoothY = 0;
+    let lastX = null, lastY = null;
+    let animId;
+
+    const handlePointerMove = (e) => {
+      if (e.pointerType === 'touch') return;
+      pointerX = (e.clientX / window.innerWidth) * 2 - 1;
+      pointerY = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+
+    const handlePointerLeave = () => {
+      pointerX = 0;
+      pointerY = 0;
+    };
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
+    document.addEventListener('pointerleave', handlePointerLeave);
+
+    const loop = () => {
+      animId = requestAnimationFrame(loop);
+      smoothX += (pointerX - smoothX) * 0.055;
+      smoothY += (pointerY - smoothY) * 0.055;
+
+      const nx = Math.round(smoothX * 1000) / 1000;
+      const ny = Math.round(smoothY * 1000) / 1000;
+
+      if (nx !== lastX || ny !== lastY) {
+        lastX = nx;
+        lastY = ny;
+        document.documentElement.style.setProperty('--px', nx);
+        document.documentElement.style.setProperty('--py', ny);
+      }
+    };
+
+    animId = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('pointerleave', handlePointerLeave);
+    };
+  }, []);
 
   // Section scroll observer
   useEffect(() => {
@@ -173,7 +223,10 @@ export default function App() {
       {/* 35mm Film Grain & Cinematic Vignette */}
       <FilmGrain enabled={grainEnabled} />
 
-      {/* Floating Navigation Bar */}
+      {/* Ambient Drifting Light Motes & Cursor Sparks */}
+      <AmbientParticles />
+
+      {/* Floating Proximity-Magnifying Navigation Dock */}
       <Navbar
         activeSection={activeSection}
         onOpenMobileMenu={() => setMobileMenuOpen(true)}
@@ -196,7 +249,7 @@ export default function App() {
         {/* 01: Hero Section */}
         <Hero onExploreClick={handleExploreClick} />
 
-        {/* 02: Work Archive (Masonry Editorial Grid) */}
+        {/* 02: Work Archive (Masonry Editorial Grid with 3D Depth & Scan Plates) */}
         <PortfolioGrid onSelectProject={handleSelectProject} />
 
         {/* 03: Editorial About & Practice */}

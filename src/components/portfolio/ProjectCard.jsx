@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, Camera } from 'lucide-react';
 import { playShutterSound } from '../../utils/sound';
+import PixelScanPlate from '../common/PixelScanPlate';
 
 export default function ProjectCard({
   project,
@@ -8,6 +9,7 @@ export default function ProjectCard({
   onQuickPreview
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Dynamic aspect ratio classes
   const getAspectClass = () => {
@@ -25,8 +27,11 @@ export default function ProjectCard({
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     playShutterSound();
+    if (window.burstAt) {
+      window.burstAt(e.clientX, e.clientY);
+    }
     onSelectProject(project);
   };
 
@@ -34,10 +39,12 @@ export default function ProjectCard({
     <article
       data-cursor="view"
       onClick={handleClick}
-      className={`group relative overflow-hidden rounded-md cursor-pointer border border-editorial-border/60 hover:border-editorial-borderHover transition-all duration-700 bg-editorial-card flex flex-col justify-end ${getAspectClass()}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`group relative overflow-hidden rounded-md cursor-pointer border border-editorial-border/60 hover:border-editorial-borderHover transition-all duration-700 bg-editorial-card flex flex-col justify-end portal-plate ${getAspectClass()}`}
     >
-      {/* Background Image Container */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      {/* Background Image Container with 3D Depth Portal */}
+      <div className="absolute inset-0 z-0 overflow-hidden portal-media">
         {/* Placeholder skeleton */}
         {!isLoaded && (
           <div className="absolute inset-0 bg-neutral-900 animate-pulse" />
@@ -50,6 +57,11 @@ export default function ProjectCard({
           className={`w-full h-full object-cover filter contrast-[1.08] transition-all duration-700 ease-out group-hover:scale-105 group-hover:contrast-125 ${
             isLoaded ? 'opacity-90' : 'opacity-0'
           }`}
+        />
+        {/* Pixel Scanline Transmission Plate */}
+        <PixelScanPlate
+          imageSrc={project.coverImage}
+          isHovered={isHovered}
         />
         {/* Atmospheric vignette & gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#070708] via-[#070708]/30 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-500" />
@@ -67,7 +79,7 @@ export default function ProjectCard({
         </div>
 
         {/* View Story Arrow Icon */}
-        <div className="w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-accent-lime group-hover:text-black group-hover:border-accent-lime transition-all duration-300 transform group-hover:scale-110">
+        <div className="w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-accent-lime group-hover:text-black group-hover:border-accent-lime transition-all duration-300 transform group-hover:scale-110 shadow-lg">
           <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
       </div>
